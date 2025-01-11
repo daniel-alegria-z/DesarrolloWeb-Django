@@ -1,0 +1,117 @@
+<html>
+<head>
+    <title>Consultar Control</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+
+<style>
+    .menu-hidden {
+        display: none;
+    }
+
+    .menu-container:hover .menu-hidden {
+        display: block;
+    }
+
+    .menu-container {
+        position: relative;
+    }
+
+    .menu-hidden {
+        position: absolute;
+        right: 0;
+        top: 100%; /* Para que el menú quede justo debajo del botón */
+        z-index: 50;
+        width: 12rem; /* Ajusta el ancho si es necesario */
+        background-color: white;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 0.5rem;
+    }
+</style>
+
+<body class="bg-gray-100">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold">Consultar Control</h1>
+                <div class="flex items-center space-x-4 relative">
+                    <a href="{% url 'servicios' %}" class="text-black flex items-center">
+                        <i class="fas fa-home mr-2"></i>Inicio
+                    </a>
+                    <div class="menu-container">
+                        <button class="text-black flex items-center focus:outline-none">
+                            <i class="fas fa-bars mr-2"></i>Menú
+                        </button>
+                        <div class="menu-hidden">
+                            <a href="{% url 'registro_control' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Registrar Control</a>
+                            <a href="{% url 'modificar_control' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Modificar Control</a>
+                            <a href="{% url 'listar_control' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Listar Controles</a>
+                            <a href="{% url 'eliminar_control' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Eliminar Control</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form method="GET" class="mb-4">
+                <div class="mb-4">
+                    <label for="idControl" class="block text-sm font-medium text-gray-700">ID del Control</label>
+                    <select id="idControl" name="idControl" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" onchange="this.form.submit()" required>
+                        <option value="">-- Selecciona un Control --</option>
+                        {% for control in controles %}
+                            <option value="{{ control.idControl }}" {% if control_data and control_data.idControl == control.idControl %}selected{% endif %}>{{ control.idControl }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </form>
+            <div id="control-details" class="mt-6">
+                {% if control_data %}
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Campo</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">ID Control</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ control_data.idControl }}</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Fecha y Hora de Inspección</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ control_data.fechaInspeccion }} - {{control_data.horaInspeccion}}</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Tipo de Control</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ control_data.tipoControl }}</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Resultado de la Inspección</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ control_data.resultadoInspeccion }}</td>
+                            </tr>                          
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">ID Importación</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ control_data.idImportacion.idImportacion}}</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">ID Exportación</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ control_data.idExportacion.idExportacion}}</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">ID Responsable</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ control_data.responsableID.id}} - {{ control_data.responsableID.nombreCompleto}}</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Descripción de Hallazgos</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ control_data.descripcionHallazgos }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p class="text-gray-600">Selecciona un control para ver sus detalles.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

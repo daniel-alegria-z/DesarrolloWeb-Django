@@ -1,0 +1,147 @@
+<html>
+<head>
+    <title>AduanaCo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</head>
+
+<style>
+    .menu-hidden {
+        display: none;
+    }
+
+    .menu-container:hover .menu-hidden {
+        display: block;
+    }
+
+    .menu-container {
+        position: relative;
+    }
+
+    .menu-hidden {
+        position: absolute;
+        right: 0;
+        top: 100%; /* Para que el menú quede justo debajo del botón */
+        z-index: 50;
+        width: 12rem; /* Ajusta el ancho si es necesario */
+        background-color: white;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 0.5rem;
+    }
+</style>
+
+<body class="bg-gray-100">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold">AduanaCo</h1>
+                <div class="flex items-center space-x-4 relative">
+                    <a href="{% url 'servicios' %}" class="text-black flex items-center">
+                        <i class="fas fa-home mr-2"></i>Inicio
+                    </a>
+                    <div class="menu-container">
+                        <div class="text-black flex items-center cursor-pointer">
+                            <i class="fas fa-bars mr-2"></i>Menú
+                        </div>
+                        <div class="menu-hidden">
+                            <a href="{% url 'modificar_control' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Modificar Control</a>
+                            <a href="{% url 'consultar_control' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Consultar Control</a>
+                            <a href="{% url 'listar_control' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Listar Controles</a>
+                            <a href="{% url 'eliminar_control' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Eliminar Control</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h2 class="text-xl font-semibold mb-2">Registro de Control</h2>
+            <p class="text-gray-500 mb-6">Formulario</p>
+            <form id="controlForm" method="POST" action="{% url 'registro_control' %}">
+                {% csrf_token %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="control_id" class="block text-sm font-medium text-gray-700">ID de Control</label>
+                        <input type="text" name="control_id" id="control_id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" pattern="[0-9]*" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g, '')" required>
+                    </div>
+                    <div class="flex space-x-4">
+                        <div class="w-full">
+                            <label for="inspection_date" class="block text-sm font-medium text-gray-700">Fecha de Inspección</label>
+                            <input type="date" name="inspection_date" id="inspection_date" 
+                                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                        </div>
+                        <div class="w-full">
+                            <label for="inspection_time" class="block text-sm font-medium text-gray-700">Hora de Inspección</label>
+                            <input type="time" name="inspection_time" id="inspection_time" 
+                                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="control_type" class="block text-sm font-medium text-gray-700">Tipo de Control</label>
+                        <input type="text" name="control_type" id="control_type" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="inspection_result" class="block text-sm font-medium text-gray-700">Resultado de Inspección</label>
+                        <input type="text" name="inspection_result" id="inspection_result" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="import_id" class="block text-sm font-medium text-gray-700">ID de Importación</label>
+                        <select id="import_id" name="import_id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" onchange="toggleSelectState()">
+                            <option value="">-- Selecciona una Importación --</option>
+                            {% for importacion in importaciones %}
+                                <option value="{{ importacion.idImportacion }}">{{ importacion.idImportacion }} - {{ importacion.proveedor }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="export_id" class="block text-sm font-medium text-gray-700">ID de Exportación</label>
+                        <select id="export_id" name="export_id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" onchange="toggleSelectState()">
+                            <option value="">-- Selecciona una Exportación --</option>
+                            {% for exportacion in exportaciones %}
+                                <option value="{{ exportacion.idExportacion }}">{{ exportacion.idExportacion }} - {{ exportacion.cliente }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>                    
+                    <div>
+                        <label for="responsible_id" class="block text-sm font-medium text-gray-700">ID de Responsable</label>
+                        <select id="responsible_id" name="responsible_id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                            <option value="">-- Selecciona un Responsable --</option>
+                            {% for responsable in responsables %}
+                                <option value="{{ responsable.id }}">{{ responsable.id }} - {{ responsable.nombreCompleto }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-span-2">
+                        <label for="findings_description" class="block text-sm font-medium text-gray-700">Descripción de Hallazgos</label>
+                        <textarea name="findings_description" id="findings_description" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" rows="4" placeholder="Descripción"></textarea>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <button id="registerControl" type="submit" class="w-full bg-black text-white py-2 rounded-md">Registrar Control</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Función para alternar entre la habilitación y deshabilitación de los selectores
+        function toggleSelectState() {
+            const importSelect = document.getElementById('import_id');
+            const exportSelect = document.getElementById('export_id');
+
+            
+            if (importSelect.value !== "") {
+                exportSelect.disabled = true; 
+            } else {
+                exportSelect.disabled = false; 
+            }
+
+          
+            if (exportSelect.value !== "") {
+                importSelect.disabled = true; 
+            } else {
+                importSelect.disabled = false; 
+            }
+        }
+    </script>
+</body>
+</html>

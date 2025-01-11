@@ -1,0 +1,56 @@
+{% load static %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inicio de Sesión - AduanaCo</title>
+    <link rel="stylesheet" href="{% static 'css/inicio_sesion.css' %}">
+</head>
+<style>
+    .alert {
+        background-color: #f8d7da; /* Color de fondo rojo claro */
+        color: #ff0019; /* Color de texto */
+        border: 1px solid #f5c6cb; /* Borde rojo */
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+    }
+</style>
+
+<body>
+    <div class="contenedor">
+        <header>
+            <h1 class="tit">AduanaCo</h1>
+            <a href="{% url 'inicio' %}" class="inicio" src = "{% static 'img/inicio.png' %}">
+                <img src = "{% static 'img/inicio.png' %}" id="inicioi">
+                Inicio</a>
+        </header>
+        <div class="inicio_sesion">
+            <h2>INICIO DE SESIÓN</h2>
+            
+            <!-- Aquí se mostrarán los mensajes -->
+            {% if messages %}
+                <div class="alert">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <form method="POST" action="{% url 'iniciar_sesion' %}">
+                {% csrf_token %}
+                <label>Correo Electrónico</label>
+                <input type="email" name="email" placeholder="tu@email" required>
+
+                <label>Contraseña</label>
+                <input type="password" name="password" placeholder="******" required>
+
+                <button type="submit" class="btn">INGRESAR</button>
+
+                <p class="o">Ó</p>
+
+                <button type="button" class="btn-secundario" onclick=location.href="{% url 'registro_usuario_is' %}">REGÍSTRATE</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

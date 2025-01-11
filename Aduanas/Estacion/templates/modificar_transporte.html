@@ -1,0 +1,154 @@
+<html>
+<head>
+    <title>Modificar Transporte</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script>
+        $(document).ready(function() {
+            $('#transporte_id').change(function() {
+                const transporteId = $(this).val();
+                if (transporteId) {
+                    $.ajax({
+                        url: "{% url 'modificar_transporte' %}",
+                        type: 'GET',
+                        data: { transporte_id: transporteId },
+                        dataType: 'json',
+                        success: function(data) {
+                            $('#empresa_transporte').val(data.empresa_transporte || '');
+                            $('#medio_transporte').val(data.medio_transporte || '');
+                            $('#numero_matricula').val(data.numero_matricula || '');
+                            $('#conductor').val(data.conductor || '');
+                            $('#ruta').val(data.ruta || '');
+                            $('#fecha_salida').val(data.fecha_salida || '');
+                            $('#fecha_llegada').val(data.fecha_llegada || '');
+                            $('#estado_transporte').val(data.estado_transporte || '');
+                            $('#responsable_id').val(data.responsable_id || '');
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.error('Error:', textStatus, errorThrown);
+                            alert('No se pudo obtener la información del transporte.');
+                        }
+                    });
+                } else {
+                    $("input, select").val('');
+                }
+            });
+        });
+    </script>
+    <style>
+        .menu-hidden {
+            display: none;
+        }
+    
+        .menu-container:hover .menu-hidden {
+            display: block;
+        }
+    
+        .menu-container {
+            position: relative;
+        }
+    
+        .menu-hidden {
+            position: absolute;
+            right: 0;
+            top: 100%; /* Para que el menú quede justo debajo del botón */
+            z-index: 50;
+            width: 12rem; /* Ajusta el ancho si es necesario */
+            background-color: white;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold">Modificar Transporte</h1>
+                <div class="flex items-center space-x-4 relative">
+                    <a href="{% url 'servicios' %}" class="text-black flex items-center">
+                        <i class="fas fa-home mr-2"></i>Inicio
+                    </a>
+                    <div class="menu-container">
+                        <div class="text-black flex items-center cursor-pointer">
+                            <i class="fas fa-bars mr-2"></i>Menú
+                        </div>
+                        <div class="menu-hidden">
+                            <a href="{% url 'registro_transporte' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Registrar Transporte</a>
+                            <a href="{% url 'consultar_transporte' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Consultar Transporte</a>
+                            <a href="{% url 'listar_transporte' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Listar Transportes</a>
+                            <a href="{% url 'eliminar_transporte' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Eliminar Transporte</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if error %}
+                <div class="mb-4 text-red-600">{{ error }}</div>
+            {% endif %}
+            <form method="POST" action="{% url 'modificar_transporte' %}">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="transporte_id" class="block text-sm font-medium text-gray-700">ID de Transporte</label>
+                    <select id="transporte_id" name="transporte_id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                        <option value="">-- Selecciona un Transporte --</option>
+                        {% for transporte in transportes %}
+                            <option value="{{ transporte.idTransporte }}" {% if transporte_data and transporte_data.idTransporte == transporte.idTransporte %}selected{% endif %}>{{ transporte.idTransporte }} - {{transporte.empresaTransporte}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="empresa_transporte" class="block text-sm font-medium text-gray-700">Empresa de Transporte</label>
+                        <input type="text" id="empresa_transporte" name="empresa_transporte" value="{{ transporte_data.empresaTransporte|default:'' }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="medio_transporte" class="block text-sm font-medium text-gray-700">Medio de Transporte</label>
+                        <input type="text" id="medio_transporte" name="medio_transporte" value="{{ transporte_data.medioTransporte|default:'' }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="numero_matricula" class="block text-sm font-medium text-gray-700">Número de Matrícula</label>
+                        <input type="text" id="numero_matricula" name="numero_matricula" value="{{ transporte_data.numeroMatricula|default:'' }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"  placeholder="AAA-###" required>
+                    </div>
+                    <div>
+                        <label for="conductor" class="block text-sm font-medium text-gray-700">Conductor</label>
+                        <input type="text" id="conductor" name="conductor" value="{{ transporte_data.conductor|default:'' }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="ruta" class="block text-sm font-medium text-gray-700">Ruta</label>
+                        <input type="text" id="ruta" name="ruta" value="{{ transporte_data.ruta|default:'' }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="fecha_salida" class="block text-sm font-medium text-gray-700">Fecha de Salida</label>
+                        <input type="date" id="fecha_salida" name="fecha_salida" value="{{ transporte_data.fechaSalida|default:'' }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="fecha_llegada" class="block text-sm font-medium text-gray-700">Fecha de Llegada</label>
+                        <input type="date" id="fecha_llegada" name="fecha_llegada" value="{{ transporte_data.fechaLlegada|default:'' }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="estado_transporte" class="block text-sm font-medium text-gray-700">Estado del Transporte</label>
+                        <input type="text" id="estado_transporte" name="estado_transporte" value="{{ transporte_data.estadoTransporte|default:'' }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+                    </div>
+                    <div>
+                        <label for="responsable_id" class="block text-sm font-medium text-gray-700">ID de Responsable</label>
+                        <select id="responsable_id" name="responsable_id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                            <option value="">-- Selecciona un Responsable --</option>
+                            {% for responsable in responsables %}
+                                <option value="{{ responsable.id }}"
+                                        {% if transporte_data and transporte_data.responsableID and transporte_data.responsableID.id == responsable.id %}selected{% endif %}>
+                                    {{ responsable.id }} - {{ responsable.nombreCompleto }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <button type="submit" class="w-full bg-black text-white py-2 rounded-md">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+

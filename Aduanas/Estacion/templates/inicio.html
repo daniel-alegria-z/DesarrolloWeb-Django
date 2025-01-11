@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>AduanaCo</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+</head>
+<style>
+    /* Estilos para los separadores */
+    .separator {
+        border-top: 2px solid #1D4ED8; /* Color azul */
+        margin: 2rem 0; /* Espacio arriba y abajo del separador */
+        position: relative;
+    }
+
+    .separator:after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px; /* Ancho del círculo */
+        height: 40px; /* Alto del círculo */
+        border-radius: 50%; /* Hace que sea un círculo */
+        background-color: white; /* Color del círculo */
+        border: 2px solid #1D4ED8; /* Borde del círculo */
+        top: -20px; /* Posiciona el círculo encima del separador */
+    }
+</style>
+
+<body>
+
+    <header>
+        <nav id="nav1">
+            <h1>AduanaCo</h1>
+            <ul>
+                <li><a href="{% url 'inicio' %}">Inicio</a></li>
+                <li><a href="{% url 'iniciar_sesion' %}">Servicios</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="somos">
+        <div id="inf"> 
+            <h2 id="tit">Quienes somos.</h2>
+            <p>Bienvenido a nuestra página AduanaCol, un pilar fundamental en el comercio internacional. 
+            La aduana se encarga de regular la entrada y salida de mercancías, asegurando que se cumplan las 
+            normativas vigentes y facilitando el intercambio comercial seguro y eficiente entre países. 
+            Nuestro papel es crucial no solo para la economía, sino también para la seguridad nacional.</p>
+        </div>
+        <div class="imagen">
+            <img src="{% static 'img/1.png' %}"> </img>
+        </div>
+    </section>
+
+    <div class="separator"></div> <!-- Separador -->
+
+    <section id="conexion">
+        <div class="imagen1">
+                <img src="{% static 'img/2.png' %}"> </img>
+        </div>   
+        <div id="inf1">
+            <h2 id="tit">Conexión Global para el Comercio Internacional</h2>
+            <p id="tit">La aduana es el enlace clave entre países, facilitando el flujo de bienes y 
+                servicios y creando conexiones globales. A través de sus operaciones, permite a empresas 
+                y personas acceder a mercados internacionales, promoviendo el intercambio de productos 
+                y tecnologías mientras asegura el cumplimiento de normativas y regulaciones.</p>
+        </div>
+    </section>
+
+    <div class="separator"></div> <!-- Separador -->
+
+    <section id="consejos">
+        <div id="inf2">
+            <h2 id="tit">Consejos para Importadores y Exportadores</h2>
+            <p id="tit"><b>- Conoce las Normativas:</b> Familiarízate con las leyes y regulaciones aduaneras del país de origen y destino. Cada país tiene sus propias normativas, y el incumplimiento puede resultar en multas o retrasos.<br><br>
+                <b> - Documentación Completa:</b> Asegúrate de tener todos los documentos necesarios, como facturas comerciales, listas de empaque, certificados de origen y permisos específicos. Una documentación incompleta puede retrasar la liberación de tus mercancías.<br><br>
+                <b> - Valoración Aduanera:</b> Asegúrate de declarar correctamente el valor de tus mercancías. La subdeclaración o sobrevaloración puede resultar en sanciones. Consulta la legislación para saber qué se incluye en el valor aduanero.<br><br>
+                <b>- Planificación de la Logística:</b> Organiza la logística de tu envío con anticipación. Evalúa opciones de transporte, tiempos de entrega y costos. Mantén una comunicación constante con tu proveedor y transportista.<br><br>
+                <b>- Seguridad de la Carga:</b> Asegúrate de que tus mercancías estén bien embaladas y aseguradas durante el transporte. Esto no solo protege tus productos, sino que también facilita el proceso aduanero.<br><br>
+                <b> - Comunicación Efectiva:</b> Mantén una comunicación abierta y efectiva con todas las partes involucradas: proveedores, agentes de transporte, y autoridades aduaneras. Esto ayuda a resolver problemas de manera rápida y eficiente.
+                </p>
+        </div>
+        <div class="imagen">
+                <img src="{% static 'img/3.png' %}"> </img>
+        </div>   
+    </section>
+
+    <div class="separator"></div> <!-- Separador -->
+
+    <section id="controles">
+        <div class="imagen1">
+                <img src="{% static 'img/4.png' %}"> </img>
+        </div>   
+        <div id="inf1">
+            <h2 id="tit">Controles Aduaneros</h2>
+            <p id="tit">En la aduana, se implementan rigurosos controles para garantizar que el comercio 
+                internacional cumpla con todas las normativas legales y sanitarias. Estos controles 
+                incluyen la inspección de mercancías, la verificación de documentación y la regulación 
+                de productos prohibidos o restringidos, protegiendo tanto la economía como la seguridad 
+                del país.</p>
+        </div>
+    </section>
+
+    <div class="separator"></div> <!-- Separador -->
+
+    <section id="cuenta">
+        <div id="infc">
+            <h2 id="c">Inicia hoy con AduanaCo <br> y transforma tu gestión aduanera</h2>
+            <a href="{% url 'iniciar_sesion' %}"><button id="iniciar">Iniciar sesión</button></a>
+        </div>
+            <div class="imagen2">
+                <img src="{% static 'img/5.png' %}"> </img> 
+        </div>
+    </section>
+
+    <footer>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 50px 20px;">
+            <div style="display: flex; align-items: center;">
+                <div style="text-align: center; margin-right: 15px;">
+                    <img src="{% static 'img/facebook.png' %}" alt="Facebook" style="width: 25px; height: 25px;">
+                    <a href="#">Facebook</a>
+                </div>
+                <div style="text-align: center;">
+                    <img src="{% static 'img/instagram.png' %}" alt="Instagram" style="width: 25px; height: 25px;">
+                    <a href="#">Instagram</a>
+                </div>
+            </div>
+    
+            <!-- Términos y Política en el Centro -->
+            <nav id="nav3" style="text-align: center;">
+                <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column;">
+                    <li><a href="#">Política de Privacidad</a></li>
+                    <li><a href="#">Términos de Servicio</a></li>
+                </ul>
+            </nav>
+    
+            <!-- Información de AduanaCo a la Derecha -->
+            <div style="text-align: right;">
+                <p id="titu"><b>AduanaCo</b></p>
+                <p id="derechos">&copy; 2024 AduanaControl. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

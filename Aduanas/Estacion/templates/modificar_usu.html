@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modificar Usuario</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script>
+        function fetchUserData() {
+            const usuarioId = document.getElementById('usuario_id').value;
+            if (usuarioId) {
+                fetch("{% url 'modificar_usuario' %}?usuario_id=" + usuarioId)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error en la respuesta de la red: ' + response.statusText);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.error) {
+                            throw new Error(data.error);
+                        }
+                        document.getElementById('name').value = data.name || '';
+                        document.getElementById('contact').value = data.contact || '';
+                        document.getElementById('email').value = data.email || '';
+                        document.getElementById('dob').value = data.dob || '';
+                        document.getElementById('country').value = data.country || '';
+                        document.getElementById('role').value = data.role || '';
+
+                        const genderRadios = document.getElementsByName('gender');
+                        genderRadios.forEach(radio => {
+                            radio.checked = radio.value === data.gender;
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('No se pudo obtener la información del usuario: ' + error);
+                    });
+            } else {
+                clearFields();
+            }
+        }
+
+        function clearFields() {
+            document.getElementById('name').value = '';
+            document.getElementById('contact').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('dob').value = '';
+            document.getElementById('country').value = '';
+            document.getElementById('role').value = '';
+            const genderRadios = document.getElementsByName('gender');
+            genderRadios.forEach(radio => {
+                radio.checked = false;
+            });
+        }
+    </script>
+    <style>
+        .menu-hidden {
+            display: none;
+        }
+    
+        .menu-container:hover .menu-hidden {
+            display: block;
+        }
+    
+        .menu-container {
+            position: relative;
+        }
+    
+        .menu-hidden {
+            position: absolute;
+            right: 0;
+            top: 100%; /* Para que el menú quede justo debajo del botón */
+            z-index: 50;
+            width: 12rem; /* Ajusta el ancho si es necesario */
+            background-color: white;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold">Modificar Usuario</h1>
+                <div class="flex items-center space-x-4 relative">
+                    <a href="{% url 'servicios' %}" class="text-black flex items-center">
+                        <i class="fas fa-home mr-2"></i>Inicio
+                    </a>
+                    <div class="menu-container">
+                        <div class="text-black flex items-center cursor-pointer">
+                            <i class="fas fa-bars mr-2"></i>Menú
+                        </div>
+                        <div class="menu-hidden">
+                            <a href="{% url 'registro_usuario' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Registrar Usuarios</a>
+                            <a href="{% url 'consultar_usuario' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Consultar Usuarios</a>
+                            <a href="{% url 'listar_usuarios' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Listar Usuarios</a>
+                            <a href="{% url 'eliminar_usuario' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Eliminar Usuarios</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if error %}
+                <div class="mb-4 text-red-600">{{ error }}</div>
+            {% endif %}
+            <form method="POST" action="{% url 'modificar_usuario' %}">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="usuario_id" class="block text-sm font-medium text-gray-700">ID del Usuario</label>
+                    <select id="usuario_id" name="usuario_id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" onchange="fetchUserData()" required>
+                        <option value="">-- Selecciona un Usuario --</option>
+                        {% for usuario in usuarios %}
+                            <option value="{{ usuario.id }}" {% if user_data and user_data.id == usuario.id %}selected{% endif %}>
+                                {{ usuario.id }} - {{ usuario.nombreCompleto }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Nombre Completo</label>
+                        <input type="text" id="name" name="name" value="{{ user_data.nombreCompleto|default:'' }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="contact" class="block text-sm font-medium text-gray-700">Número de Contacto</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">+</span>
+                            <input type="text" id="contact" name="contact" value="{{ user_data.telefono|default:'' }}" class="pl-8 mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required pattern="[0-9]*" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g, '')" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
+                        <input type="email" id="email" name="email" value="{{ user_data.correo|default:'' }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="dob" class="block text-sm font-medium text-gray-700">Año de Nacimiento</label>
+                        <input type="date" id="dob" name="dob" value="{{ user_data.ano_nacimiento|default:'' }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="country" class="block text-sm font-medium text-gray-700">País de Origen</label>
+                        <select id="country" name="country" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                            <option value="Argentina" {% if user_data and user_data.pais == "Argentina" %}selected{% endif %}>Argentina</option>
+                            <option value="Bolivia" {% if user_data and user_data.pais == "Bolivia" %}selected{% endif %}>Bolivia</option>
+                            <option value="Chile" {% if user_data and user_data.pais == "Chile" %}selected{% endif %}>Chile</option>
+                            <option value="Colombia" {% if user_data and user_data.pais == "Colombia" %}selected{% endif %}>Colombia</option>
+                            <option value="Ecuador" {% if user_data and user_data.pais == "Ecuador" %}selected{% endif %}>Ecuador</option>
+                            <option value="Mexico" {% if user_data and user_data.pais == "Mexico" %}selected{% endif %}>México</option>
+                            <option value="Peru" {% if user_data and user_data.pais == "Peru" %}selected{% endif %}>Perú</option>
+                            <option value="Venezuela" {% if user_data and user_data.pais == "Venezuela" %}selected{% endif %}>Venezuela</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="role" class="block text-sm font-medium text-gray-700">Rol</label>
+                        <select id="role" name="role" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                            <option value="Administrador" {% if user_data and user_data.rol == "Administrador" %}selected{% endif %}>Administrador</option>
+                            <option value="Supervisor" {% if user_data and user_data.rol == "Supervisor" %}selected{% endif %}>Supervisor</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Selecciona el Género</label>
+                    <div class="flex items-center space-x-4">
+                        <label class="inline-flex items-center">
+                            <input type="radio" class="form-radio" name="gender" value="Masculino" {% if user_data and user_data.genero == "Masculino" %}checked{% endif %}>
+                            <span class="ml-2">Masculino</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" class="form-radio" name="gender" value="Femenino" {% if user_data and user_data.genero == "Femenino" %}checked{% endif %}>
+                            <span class="ml-2">Femenino</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" class="form-radio" name="gender" value="Otro" {% if user_data and user_data.genero == "Otro" %}checked{% endif %}>
+                            <span class="ml-2">Otro</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <button type="submit" class="w-full bg-black text-white py-2 rounded-md">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

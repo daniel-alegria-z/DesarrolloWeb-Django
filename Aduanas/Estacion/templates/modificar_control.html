@@ -1,0 +1,199 @@
+<html>
+<head>
+    <title>Modificar Control</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script>
+        $(document).ready(function() {
+            $('#control_id').change(function() {
+                const controlId = $(this).val();
+                if (controlId) {  // Solo realiza la solicitud si hay un control seleccionado
+                    $.ajax({
+                        url: "{% url 'modificar_control' %}",
+                        type: 'GET',
+                        data: { control_id: controlId },
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data.error) {
+                                alert(data.error); // Mostrar mensaje de error si no se encontró el control
+                            } else {
+                                // Llenar los campos del formulario con los datos recibidos
+                                $('#inspection_date').val(data.fechaInspeccion || '');
+                                $('#inspection_time').val(data.horaInspeccion || '');
+                                $('#control_type').val(data.tipoControl || '');
+                                $('#inspection_result').val(data.resultadoInspeccion || '');
+                                $('#import_id').val(data.idImportacion || '');
+                                $('#export_id').val(data.idExportacion || '');
+                                $('#responsible_id').val(data.responsableID || '');
+                                $('#findings_description').val(data.descripcionHallazgos || '');
+        
+                                toggleSelectState();
+                            }
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.error('Error:', textStatus, errorThrown);
+                            alert(`No se pudo obtener la información del control.`);
+                        }
+                    });
+                } else {
+                    // Limpiar los campos si no se selecciona un control
+                    $("input, select, textarea").val('');
+                    toggleSelectState();
+                }
+            });
+        
+            // Inicializar el estado de los selectores
+            toggleSelectState();
+        });
+        
+        function toggleSelectState() {
+            const importSelect = document.getElementById('import_id');
+            const exportSelect = document.getElementById('export_id');
+        
+            // Si hay una importación seleccionada, deshabilitar exportación y viceversa
+            if (importSelect.value !== "") {
+                exportSelect.disabled = true;
+            } else {
+                exportSelect.disabled = false;
+            }
+        
+            if (exportSelect.value !== "") {
+                importSelect.disabled = true;
+            } else {
+                importSelect.disabled = false;
+            }
+        }
+    </script>
+
+    <style>
+        .menu-hidden {
+            display: none;
+        }
+    
+        .menu-container:hover .menu-hidden {
+            display: block;
+        }
+    
+        .menu-container {
+            position: relative;
+        }
+    
+        .menu-hidden {
+            position: absolute;
+            right: 0;
+            top: 100%; /* Para que el menú quede justo debajo del botón */
+            z-index: 50;
+            width: 12rem; /* Ajusta el ancho si es necesario */
+            background-color: white;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold">Modificar Control</h1>
+                <div class="flex items-center space-x-4 relative">
+                    <a href="{% url 'servicios' %}" class="text-black flex items-center">
+                        <i class="fas fa-home mr-2"></i>Inicio
+                    </a>
+                    <div class="menu-container">
+                        <div class="text-black flex items-center cursor-pointer">
+                            <i class="fas fa-bars mr-2"></i>Menú
+                        </div>
+                        <div class="menu-hidden">
+                            <a href="{% url 'registro_control' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Registrar Control</a>
+                            <a href="{% url 'consultar_control' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Consultar Control</a>
+                            <a href="{% url 'listar_control' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Listar Controles</a>
+                            <a href="{% url 'eliminar_control' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Eliminar Control</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if error %}
+                <div class="mb-4 text-red-600">{{ error }}</div>
+            {% endif %}
+            <form method="POST" action="{% url 'modificar_control' %}">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="control_id" class="block text-sm font-medium text-gray-700">ID de Control</label>
+                    <select id="control_id" name="control_id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                        <option value="">-- Selecciona un Control --</option>
+                        {% for control in controles %}
+                            <option value="{{ control.idControl }}" {% if control_data and control_data.idControl == control.idControl %}selected{% endif %}>{{ control.idControl }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="flex space-x-4">
+                        <div class="w-full">
+                            <label for="inspection_date" class="block text-sm font-medium text-gray-700">Fecha de Inspección</label>
+                            <input type="date" name="inspection_date" id="inspection_date" value="{{ control_data.fechaInspeccion|default:'' }}"
+                                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                        </div>
+                        <div class="w-full">
+                            <label for="inspection_time" class="block text-sm font-medium text-gray-700">Hora de Inspección</label>
+                            <input type="time" name="inspection_time" id="inspection_time" value="{{ control_data.horaInspeccion|default:'' }}" 
+                                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="control_type" class="block text-sm font-medium text-gray-700">Tipo de Control</label>
+                        <input type="text" name="control_type" id="control_type" value="{{ control_data.tipoControl|default:'' }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="inspection_result" class="block text-sm font-medium text-gray-700">Resultado de Inspección</label>
+                        <input type="text" name="inspection_result" id="inspection_result" value="{{ control_data.resultadoInspeccion|default:'' }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="import_id" class="block text-sm font-medium text-gray-700">ID de Importación</label>
+                        <select id="import_id" name="import_id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" onchange="toggleSelectState()">
+                            <option value="">-- Selecciona una Importación --</option>
+                            {% for importacion in importaciones %}
+                                <option value="{{ importacion.idImportacion }}" 
+                                        {% if control_data and control_data.idImportacion and control_data.idImportacion.idImportacion == importacion.idImportacion %}selected{% endif %}>
+                                    {{ importacion.idImportacion }} - {{ importacion.proveedor }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="export_id" class="block text-sm font-medium text-gray-700">ID de Exportación</label>
+                        <select id="export_id" name="export_id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" onchange="toggleSelectState()">
+                            <option value="">-- Selecciona una Exportación --</option>
+                            {% for exportacion in exportaciones %}
+                                <option value="{{  exportacion.idExportacion }}" 
+                                        {% if control_data and control_data.idExportacion and control_data.idExportacion.idExportacion == exportacion.idExportacion %}selected{% endif %}>
+                                    {{ exportacion.idExportacion }} - {{ exportacion.cliente }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>                    
+                    <div>
+                        <label for="responsible_id" class="block text-sm font-medium text-gray-700">ID de Responsable</label>
+                        <select id="responsible_id" name="responsible_id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                            <option value="">-- Selecciona un Responsable --</option>
+                            {% for responsable in responsables %}
+                                <option value="{{ responsable.id }}"
+                                        {% if control_data and control_data.responsableID and control_data.responsableID.id == responsable.id %}selected{% endif %}>
+                                    {{ responsable.id }} - {{ responsable.nombreCompleto }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-span-2">
+                        <label for="findings_description" class="block text-sm font-medium text-gray-700">Descripción de Hallazgos</label>
+                        <textarea name="findings_description" id="findings_description" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" rows="4" placeholder="Descripción">{{ control_data.descripcionHallazgos|default:'' }}</textarea>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <button type="submit" class="w-full bg-black text-white py-2 rounded-md">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

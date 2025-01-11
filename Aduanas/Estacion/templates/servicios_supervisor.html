@@ -1,0 +1,219 @@
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Aduana Control</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/servicios.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    
+    <!-- Aislar estilos de Tailwind solo para el menú -->
+    <style>
+        .tailwind-menu {
+            list-style-type: none; /* Elimina los puntos */
+            padding: 0; /* Elimina el padding */
+            margin: 0; /* Elimina el margen */
+            border-top: 1px solid #E2E8F0;
+        }
+        .tailwind-menu a {
+            display: block;
+            text-align: center;
+            color: #4A5568; /* text-gray-700 */
+            border-radius: 0.375rem;
+            padding: 0.5rem;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .tailwind-menu a:hover {
+            background-color: #3182CE; /* bg-blue-600 */
+            color: white;
+        }
+        /* Estilo específico para el enlace de eliminar */
+        .tailwind-menu a.eliminar:hover {
+            background-color: #F56565; /* bg-red-600 */
+            color: white;
+        }
+    </style>
+    
+    <script>
+        function toggleMenu(menuId, event) {
+            // Prevenir la acción predeterminada del enlace
+            event.preventDefault();
+            
+            // Oculta todos los menús desplegables
+            var menus = document.querySelectorAll('.servicio .absolute');
+            menus.forEach(function(menu) {
+                if (menu.id !== menuId) {
+                    menu.style.display = 'none';
+                }
+            });
+    
+            // Muestra o esconde el menú seleccionado
+            var selectedMenu = document.getElementById(menuId);
+            if (selectedMenu.style.display === 'none' || selectedMenu.style.display === '') {
+                selectedMenu.style.display = 'block';
+            } else {
+                selectedMenu.style.display = 'none';
+            }
+        }
+    </script>
+</head>
+<body>
+    <header>
+        {% load static %}
+        <div class="logo">
+            <a href="{% url 'inicio' %}">
+            <img src="{% static 'img/aduana.png' %}" alt="Aduana Control">
+            </a>
+            <span>AduanaControl</span>
+        </div>
+        <div class="inicio">
+            <a href="{% url 'cerrar_sesion' %}">
+                <img src="{% static 'img/logout.png' %}" id="inicioi">
+            </a>
+            <a href="{% url 'cerrar_sesion' %}">Cerrar sesión</a>
+        </div>
+    </header>
+
+    <section class="fondotit">
+        <h1>Navega por nuestros servicios personalizados</h1>
+    </section>
+    <section class="servicios">
+        <div class="servicio">
+            <a href="#" onclick="toggleMenu('userMenuUsuarios', event)">    
+                <img src="{% static 'img/usuario1.png' %}" alt="Usuarios">
+                <p>Usuarios</p>
+            </a>
+            <div class="absolute top-full mt-3 w-48 bg-white shadow-lg rounded-lg border border-gray-200 tailwind-menu" id="userMenuUsuarios" style="display: none;">
+                <ul class="flex flex-col p-4 space-y-2 tailwind-menu">
+                    <li>
+                        <a href="{% url 'consultar_usuarioS' %}">
+                            <i class="fas fa-search mr-2"></i>Consultar
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'listar_usuariosS' %}">
+                            <i class="fas fa-list mr-2"></i>Listar
+                        </a>
+                    </li>                    
+                </ul>
+            </div>
+        </div>
+        <div class="servicio">
+            <a href="#" onclick="toggleMenu('userMenuImportaciones', event)">    
+                <img src="{% static 'img/importar.png' %}" alt="Importaciones">
+                <p>Importaciones</p>
+            </a>
+            <div class="absolute top-full mt-2 w-48 bg-white shadow-lg rounded-lg border border-gray-200 tailwind-menu" id="userMenuImportaciones" style="display: none;">
+                <ul class="flex flex-col p-4 space-y-2 tailwind-menu">
+                    <li>
+                        <a href="{% url 'consultar_importacionS' %}">
+                            <i class="fas fa-search mr-2"></i>Consultar
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'listar_importacionS' %}">
+                            <i class="fas fa-list mr-2"></i>Listar
+                        </a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <div class="servicio">
+            <a href="#" onclick="toggleMenu('userMenuExportaciones', event)">
+                <img src="{% static 'img/exportar.png' %}" alt="Exportaciones">
+                <p>Exportaciones</p>   
+            </a>
+            <div class="absolute top-full mt-2 w-48 bg-white shadow-lg rounded-lg border border-gray-200 tailwind-menu" id="userMenuExportaciones" style="display: none;">
+                <ul class="flex flex-col p-4 space-y-2 tailwind-menu">
+                    
+                    <li>
+                        <a href="{% url 'consultar_exportacionS' %}">
+                            <i class="fas fa-search mr-2"></i>Consultar
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'listar_exportacionS' %}">
+                            <i class="fas fa-list mr-2"></i>Listar
+                        </a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <div class="servicio">
+            <a href="#" onclick="toggleMenu('userMenuTransporte', event)">
+                <img src="{% static 'img/transporte3.png' %}" alt="Transportes">
+                <p>Transporte</p>   
+            </a>
+            <div class="absolute top-full mt-2 w-48 bg-white shadow-lg rounded-lg border border-gray-200 tailwind-menu" id="userMenuTransporte" style="display: none;">
+                <ul class="flex flex-col p-4 space-y-2 tailwind-menu">
+                    
+                    <li>
+                        <a href="{% url 'consultar_transporteS' %}">
+                            <i class="fas fa-search mr-2"></i>Consultar
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'listar_transporteS' %}">
+                            <i class="fas fa-list mr-2"></i>Listar
+                        </a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <div class="servicio">
+            <a href="#" onclick="toggleMenu('userMenuControl', event)">
+                <img src="{% static 'img/control.png' %}" alt="Control">
+                <p>Control</p>   
+            </a>
+            <div class="absolute top-full mt-2 w-48 bg-white shadow-lg rounded-lg border border-gray-200 tailwind-menu" id="userMenuControl" style="display: none;">
+                <ul class="flex flex-col p-4 space-y-2 tailwind-menu">
+                    
+                    <li>
+                        <a href="{% url 'consultar_controlS' %}">
+                            <i class="fas fa-search mr-2"></i>Consultar
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'listar_controlS' %}">
+                            <i class="fas fa-list mr-2"></i>Listar
+                        </a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <div class="servicio">
+            <a href="#" onclick="toggleMenu('userMenuCarga', event)">
+                <img src="{% static 'img/transporte1.png' %}" alt="Cargas">
+                <p>Cargas</p>   
+            </a>
+            <div class="absolute top-full mt-2 w-48 bg-white shadow-lg rounded-lg border border-gray-200 tailwind-menu" id="userMenuCarga" style="display: none;">
+                <ul class="flex flex-col p-4 space-y-2 tailwind-menu">
+                    
+                    <li>
+                        <a href="{% url 'consultar_cargaS' %}">
+                            <i class="fas fa-search mr-2"></i>Consultar
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'listar_cargaS' %}">
+                            <i class="fas fa-list mr-2"></i>Listar
+                        </a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Aduana Control. Todos los derechos reservados.</p>
+        <div class="social-media">
+            <a href="#"><img src="{% static 'img/facebook.png' %}" alt="Facebook"></a>
+            <a href="#"><img src="{% static 'img/instagram.png' %}" alt="TikTok"></a>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<html>
+<head>
+    <title>Modificar Carga</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script>
+        $(document).ready(function() {
+            $('#carga_id').change(function() {
+                const cargaId = $(this).val();
+                if (cargaId) {
+                    $.ajax({
+                        url: "{% url 'modificar_carga' %}",
+                        type: 'GET',
+                        data: { carga_id: cargaId },
+                        dataType: 'json',
+                        success: function(data) {
+                            // Cargar datos en los campos del formulario
+                            $('#tipo_carga').val(data.tipoCarga || '');
+                            $('#peso_bruto').val(data.pesoBruto || '');
+                            $('#peso_neto').val(data.pesoNeto || '');
+                            $('#volumen').val(data.volumen || '');
+                            $('#embalaje').val(data.embalaje || '');
+                            $('#contenido').val(data.contenido || '');
+                            $('#valor_declarado').val(data.valorDeclarado || '');
+                            $('#seguro_carga').val(data.seguroCarga || '');
+                            $('#estado_carga').val(data.estadoCarga || '');
+                            $('#id_importacion').val(data.idImportacion || '');
+                            $('#id_exportacion').val(data.idExportacion || '');
+                            $('#responsable_id').val(data.responsableID || '');
+                            $('#descripcion_carga').val(data.descripcionCarga || '');
+
+                            toggleSelectState();
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.error('Error:', textStatus, errorThrown);
+                            alert('No se pudo obtener la información de la carga.');
+                        }
+                    });
+                } else {
+                    $("input, select").val('');
+                    toggleSelectState();
+                }
+            });
+
+            toggleSelectState();
+        });
+
+        function toggleSelectState() {
+            const importSelect = document.getElementById('id_importacion');
+            const exportSelect = document.getElementById('id_exportacion');
+
+            if (importSelect.value !== "") {
+                exportSelect.disabled = true;
+            } else {
+                exportSelect.disabled = false;
+            }
+
+            if (exportSelect.value !== "") {
+                importSelect.disabled = true;
+            } else {
+                importSelect.disabled = false;
+            }
+        }
+
+    </script>
+
+    <style>
+        .menu-hidden {
+            display: none;
+        }
+    
+        .menu-container:hover .menu-hidden {
+            display: block;
+        }
+    
+        .menu-container {
+            position: relative;
+        }
+    
+        .menu-hidden {
+            position: absolute;
+            right: 0;
+            top: 100%; /* Para que el menú quede justo debajo del botón */
+            z-index: 50;
+            width: 12rem; /* Ajusta el ancho si es necesario */
+            background-color: white;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 0.5rem;
+        }
+    </style>
+    
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold">Modificar Carga</h1>
+                <div class="flex items-center space-x-4 relative">
+                    <a href="{% url 'servicios' %}" class="text-black flex items-center">
+                        <i class="fas fa-home mr-2"></i>Inicio
+                    </a>
+                    <div class="menu-container">
+                        <div class="text-black flex items-center cursor-pointer">
+                            <i class="fas fa-bars mr-2"></i>Menú
+                        </div>
+                        <div class="menu-hidden">
+                            <a href="{% url 'registro_carga' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Registrar Carga</a>
+                            <a href="{% url 'consultar_carga' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Consultar Carga</a>
+                            <a href="{% url 'listar_carga' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Listar Cargas</a>
+                            <a href="{% url 'eliminar_carga' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Eliminar Carga</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if error %}
+                <div class="mb-4 text-red-600">{{ error }}</div>
+            {% endif %}
+            <form method="POST" action="{% url 'modificar_carga' %}">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="carga_id" class="block text-sm font-medium text-gray-700">ID de Carga</label>
+                    <select id="carga_id" name="carga_id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                        <option value="">-- Selecciona una Carga --</option>
+                        {% for carga in cargas %}
+                            <option value="{{ carga.idCarga }}" {% if carga_data and carga_data.idCarga == carga.idCarga%}selected{% endif %}>{{ carga.idCarga }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="tipo_carga" class="block text-sm font-medium text-gray-700">Tipo de Carga</label>
+                        <input type="text" id="tipo_carga" name="tipo_carga" value="{{ carga_data.tipoCarga|default:'' }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="peso_bruto" class="block text-sm font-medium text-gray-700">Peso Bruto</label>
+                        <input type="text" name="peso_bruto" id="peso_bruto" value="{{ carga_data.pesoBruto|default:'' }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" pattern="^\d+(\.\d{1,2})?$"  inputmode="decimal" oninput="this.value=this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')" placeholder="Peso en kilogramos" required>
+                    </div>
+                    <div>
+                        <label for="peso_neto" class="block text-sm font-medium text-gray-700">Peso Neto</label>
+                        <input type="text" name="peso_neto" id="peso_neto" value="{{ carga_data.pesoNeto|default:'' }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" pattern="^\d+(\.\d{1,2})?$"  inputmode="decimal" oninput="this.value=this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')" placeholder="Peso en kilogramos" required>
+                    </div>
+                    <div>
+                        <label for="volumen" class="block text-sm font-medium text-gray-700">Volumen</label>
+                        <input type="text" name="volumen" id="volumen" value="{{ carga_data.volumen|default:'' }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" pattern="^\d+(\.\d{1,2})?$"  inputmode="decimal" oninput="this.value=this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')" placeholder="(m³)" required> 
+                    </div>
+                    <div>
+                        <label for="embalaje" class="block text-sm font-medium text-gray-700">Embalaje</label>
+                        <input type="text" id="embalaje" name="embalaje" value="{{ carga_data.embalaje|default:'' }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="contenido" class="block text-sm font-medium text-gray-700">Contenido</label>
+                        <input type="text" id="contenido" name="contenido" value="{{ carga_data.contenido|default:'' }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="valor_declarado" class="block text-sm font-medium text-gray-700">Valor Declarado</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
+                            <input type="text" name="valor_declarado" id="valor_declarado" value="{{ carga_data.valorDeclarado|default:'' }}" class="pl-8 mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" pattern="^\d+(\.\d{1,2})?$"  inputmode="decimal" oninput="this.value=this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="seguro_carga" class="block text-sm font-medium text-gray-700">Seguro de Carga</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
+                            <input type="text" name="seguro_carga" id="seguro_carga" value="{{ carga_data.seguroCarga|default:'' }}" class="pl-8 mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" pattern="^\d+(\.\d{1,2})?$"  inputmode="decimal" oninput="this.value=this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')" placeholder="Valor de seguro" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="estado_carga" class="block text-sm font-medium text-gray-700">Estado de Carga</label>
+                        <input type="text" id="estado_carga" name="estado_carga" value="{{ carga_data.estadoCarga|default:'' }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+                    </div>
+                    <div>
+                        <label for="id_importacion" class="block text-sm font-medium text-gray-700">ID de Importación</label>
+                        <select id="id_importacion" name="id_importacion" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" onchange="toggleSelectState()">
+                            <option value="">-- Selecciona una Importación --</option>
+                            {% for importacion in importaciones %}
+                                <option value="{{ importacion.idImportacion }}" 
+                                        {% if carga_data and carga_data.idImportacion.idImportacion == importacion.idImportacion %}selected{% endif %}>
+                                    {{ importacion.idImportacion }} - {{ importacion.proveedor }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="id_exportacion" class="block text-sm font-medium text-gray-700">ID de Exportación</label>
+                        <select id="id_exportacion" name="id_exportacion" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" onchange="toggleSelectState()">
+                            <option value="">-- Selecciona una Exportación --</option>
+                            {% for exportacion in exportaciones %}
+                                <option value="{{  exportacion.idExportacion }}" 
+                                        {% if carga_data and carga_data.idExportacion and carga_data.idExportacion.idExportacion == exportacion.idExportacion %}selected{% endif %}>
+                                    {{ exportacion.idExportacion }} - {{ exportacion.cliente }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="responsable_id" class="block text-sm font-medium text-gray-700">Responsable</label>
+                        <select id="responsable_id" name="responsable_id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                            <option value="">-- Selecciona un Responsable --</option>
+                            {% for responsable in responsables %}
+                                <option value="{{ responsable.id }}"
+                                        {% if carga_data and carga_data.responsableID and carga_data.responsableID.id == responsable.id %}selected{% endif %}>
+                                    {{ responsable.id }} - {{ responsable.nombreCompleto }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-span-2">
+                        <label for="descripcion_carga" class="block text-sm font-medium text-gray-700">Descripción de Carga</label>
+                        <textarea id="descripcion_carga" name="descripcion_carga" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" rows="4" placeholder="Descripción">{{ carga_data.descripcionCarga|default:'' }}</textarea>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <button type="submit" class="w-full bg-black text-white py-2 rounded-md">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

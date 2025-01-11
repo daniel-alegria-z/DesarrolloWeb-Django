@@ -1,0 +1,125 @@
+<html>
+<head>
+    <title>Consultar Transporte</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+
+<style>
+    .menu-hidden {
+        display: none;
+    }
+
+    .menu-container:hover .menu-hidden {
+        display: block;
+    }
+
+    .menu-container {
+        position: relative;
+    }
+
+    .menu-hidden {
+        position: absolute;
+        right: 0;
+        top: 100%; /* Para que el menú quede justo debajo del botón */
+        z-index: 50;
+        width: 12rem; /* Ajusta el ancho si es necesario */
+        background-color: white;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 0.5rem;
+    }
+</style>
+
+<body class="bg-gray-100">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold">Consultar Transporte</h1>
+                <div class="flex items-center space-x-4 relative">
+                    <a href="{% url 'servicios' %}" class="text-black flex items-center">
+                        <i class="fas fa-home mr-2"></i>Inicio
+                    </a>
+                    <div class="menu-container">
+                        <div class="text-black flex items-center cursor-pointer">
+                            <i class="fas fa-bars mr-2"></i>Menú
+                        </div>
+                        <div class="menu-hidden">
+                            <a href="{% url 'registro_transporte' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Registrar Transporte</a>
+                            <a href="{% url 'modificar_transporte' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Modificar Transporte</a>
+                            <a href="{% url 'listar_transporte' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Listar Transportes</a>
+                            <a href="{% url 'eliminar_transporte' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Eliminar Transporte</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form method="GET" class="mb-4">
+                <div class="mb-4">
+                    <label for="idTransporte" class="block text-sm font-medium text-gray-700">ID del Transporte</label>
+                    <select id="idTransporte" name="idTransporte" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" onchange="this.form.submit()" required>
+                        <option value="">-- Selecciona un Transporte --</option>
+                        {% for transporte in transportes %}
+                            <option value="{{ transporte.idTransporte }}" {% if transporte_data and transporte_data.idTransporte == transporte.idTransporte %}selected{% endif %}>{{ transporte.idTransporte }} - {{transporte.empresaTransporte}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </form>
+            <div id="transporte-details" class="mt-6">
+                {% if transporte_data %}
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Campo</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">ID Transporte</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ transporte_data.idTransporte }}</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Empresa</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ transporte_data.empresaTransporte }}</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Medio</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ transporte_data.medioTransporte }}</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Número de Matrícula</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ transporte_data.numeroMatricula }}</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Conductor</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ transporte_data.conductor }}</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Ruta</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ transporte_data.ruta }}</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Fecha de Salida</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ transporte_data.fechaSalida }}</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Fecha de Llegada</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ transporte_data.fechaLlegada }}</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Estado</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ transporte_data.estadoTransporte }}</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Responsable</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{transporte_data.responsableID.id}} - {{ transporte_data.responsableID.nombreCompleto }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p class="text-gray-600">Selecciona un transporte para ver sus detalles.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

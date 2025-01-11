@@ -1,0 +1,113 @@
+<html>
+<head>
+    <title>AduanaCo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+
+<style>
+    .menu-hidden {
+        display: none;
+    }
+
+    .menu-container:hover .menu-hidden {
+        display: block;
+    }
+
+    .menu-container {
+        position: relative;
+    }
+
+    .menu-hidden {
+        position: absolute;
+        right: 0;
+        top: 100%; /* Para que el menú quede justo debajo del botón */
+        z-index: 50;
+        width: 12rem; /* Ajusta el ancho si es necesario */
+        background-color: white;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 0.5rem;
+    }
+</style>
+
+<body class="bg-gray-100">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold">AduanaCo</h1>
+                <div class="flex items-center space-x-4 relative">
+                    <a href="{% url 'servicios' %}" class="text-black flex items-center">
+                        <i class="fas fa-home mr-2"></i>Inicio
+                    </a>
+                    <div class="menu-container">
+                        <div class="text-black flex items-center cursor-pointer">
+                            <i class="fas fa-bars mr-2"></i>Menú
+                        </div>
+                        <div class="menu-hidden">
+                            <a href="{% url 'modificar_transporte' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Modificar Transporte</a>
+                            <a href="{% url 'consultar_transporte' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Consultar Transporte</a>
+                            <a href="{% url 'listar_transporte' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Listar Transportes</a>
+                            <a href="{% url 'eliminar_transporte' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Eliminar Transporte</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h2 class="text-xl font-semibold mb-2">Registro de Transporte</h2>
+            <p class="text-gray-500 mb-6">Formulario para agregar un nuevo transporte</p>
+            <form id="controlForm" method="POST" action="{% url 'registro_transporte' %}">
+                {% csrf_token %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="id_transporte" class="block text-sm font-medium text-gray-700">ID de Transporte</label>
+                        <input type="text" name="id_transporte" id="id_transporte" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" pattern="[0-9]*" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g, '')" required>
+                    </div>
+                    <div>
+                        <label for="empresa_transporte" class="block text-sm font-medium text-gray-700">Empresa de Transporte</label>
+                        <input type="text" name="empresa_transporte" id="empresa_transporte" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" maxlength="30" required>
+                    </div>
+                    <div>
+                        <label for="medio_transporte" class="block text-sm font-medium text-gray-700">Medio de Transporte</label>
+                        <input type="text" name="medio_transporte" id="medio_transporte" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" maxlength="30" required>
+                    </div>
+                    <div>
+                        <label for="numero_matricula" class="block text-sm font-medium text-gray-700">Número de Matrícula</label>
+                        <input type="text" name="numero_matricula" id="numero_matricula" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" maxlength="30" placeholder="AAA-###" required>
+                    </div>
+                    <div>
+                        <label for="conductor" class="block text-sm font-medium text-gray-700">Nombre de Conductor</label>
+                        <input type="text" name="conductor" id="conductor" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" maxlength="40" required>
+                    </div>
+                    <div>
+                        <label for="ruta" class="block text-sm font-medium text-gray-700">Puntos de Ruta</label>
+                        <input type="text" name="ruta" id="ruta" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" maxlength="40" required>
+                    </div>
+                    <div>
+                        <label for="fecha_salida" class="block text-sm font-medium text-gray-700">Fecha de Salida</label>
+                        <input type="date" name="fecha_salida" id="fecha_salida" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="fecha_llegada" class="block text-sm font-medium text-gray-700">Fecha de Llegada</label>
+                        <input type="date" name="fecha_llegada" id="fecha_llegada" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="estado_transporte" class="block text-sm font-medium text-gray-700">Estado del Transporte</label>
+                        <input type="text" name="estado_transporte" id="estado_transporte" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" maxlength="40">
+                    </div>
+                    <div>
+                        <label for="responsable_id" class="block text-sm font-medium text-gray-700">ID de Responsable</label>
+                        <select id="responsable_id" name="responsable_id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                            <option value="">-- Selecciona un Responsable --</option>
+                            {% for responsable in responsables %}
+                                <option value="{{ responsable.id }}"> {{ responsable.id }} - {{ responsable.nombreCompleto }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <button type="submit" class="w-full bg-black text-white py-2 rounded-md">Registrar Transporte</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

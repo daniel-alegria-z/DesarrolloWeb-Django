@@ -1,0 +1,102 @@
+<html>
+<head>
+    <title>Lista de Exportaciones</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+
+<style>
+    .menu-hidden {
+        display: none;
+    }
+
+    .menu-container:hover .menu-hidden {
+        display: block;
+    }
+
+    .menu-container {
+        position: relative;
+    }
+
+    .menu-hidden {
+        position: absolute;
+        right: 0;
+        top: 100%; /* Para que el menú quede justo debajo del botón */
+        z-index: 50;
+        width: 12rem; /* Ajusta el ancho si es necesario */
+        background-color: white;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 0.5rem;
+    }
+</style>
+
+<body class="bg-gray-100">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-6xl">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold">Lista de Exportaciones</h1>
+                <div class="flex items-center space-x-4 relative">
+                    <a href="{% url 'servicios' %}" class="text-black flex items-center">
+                        <i class="fas fa-home mr-2"></i>Inicio
+                    </a>
+                    <div class="menu-container">
+                        <div class="text-black flex items-center cursor-pointer">
+                            <i class="fas fa-bars mr-2"></i>Menú
+                        </div>
+                        <div class="menu-hidden">
+                            <a href="{% url 'registro_exportacion' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Registrar Exportación</a>
+                            <a href="{% url 'modificar_exportacion' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Modificar Exportación</a>
+                            <a href="{% url 'consultar_exportacion' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Consultar Exportación</a>
+                            <a href="{% url 'eliminar_exportacion' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Eliminar Exportación</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead>
+                        <tr>
+                            <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID de Exportación</th>
+                            <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                            <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
+                            <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código Arancelario</th>
+                            <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cantidad</th>
+                            <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unidad</th>
+                            <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor FOB</th>
+                            <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Impuestos</th>
+                            <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Destino</th>
+                            <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Puerto de Salida</th>
+                            <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Transporte</th>
+                            <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Responsable</th>
+                            <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for exportacion in exportaciones %}
+                            <tr>
+                                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ exportacion.idExportacion }}</td>
+                                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ exportacion.fechaDeclaracion }}</td>
+                                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ exportacion.cliente }}</td>
+                                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">#{{ exportacion.codigoArancelario }}</td>
+                                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ exportacion.cantidad }}</td>
+                                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ exportacion.unidadMedida }}</td>
+                                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">${{ exportacion.valorFob }}</td>
+                                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ exportacion.impuestos }} %</td>
+                                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ exportacion.destinoMercancia }}</td>
+                                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ exportacion.puertoSalida }}</td>
+                                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{exportacion.transporteID.idTransporte}} - {{ exportacion.transporteID.empresaTransporte }}</td>
+                                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{exportacion.responsableID.id}} - {{ exportacion.responsableID.nombreCompleto }}</td>
+                                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ exportacion.descripcionMercancia }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="13" class="px-6 py-4 text-sm text-gray-600 text-center">No hay exportaciones registradas.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

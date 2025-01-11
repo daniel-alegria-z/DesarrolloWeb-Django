@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modificar Importación</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script>
+        $(document).ready(function() {
+            $('#import_id').change(function() {
+                const importId = $(this).val();
+                if (importId) {
+                    $.ajax({
+                        url: "{% url 'modificar_importacion' %}",
+                        type: 'GET',
+                        data: { import_id: importId },
+                        dataType: 'json',
+                        success: function(data) {
+                            // Cargar datos en los campos del formulario
+                            $('#declaration_date').val(data.declaration_date || '');
+                            $('#supplier').val(data.supplier || '');
+                            $('#tariff_code').val(data.tariff_code || '');
+                            $('#quantity').val(data.quantity || '');
+                            $('#unit').val(data.unit || '');
+                            $('#cif_value').val(data.cif_value || '');
+                            $('#taxes').val(data.taxes || '');
+                            $('#origin_country').val(data.origin_country || '');
+                            $('#entry_port').val(data.entry_port || '');
+                            $('#transport_id').val(data.transport_id || '');
+                            $('#responsible_id').val(data.responsible_id || '');
+                            $('#description').val(data.description || '');
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.error('Error:', textStatus, errorThrown);
+                            alert('No se pudo obtener la información de la importación.');
+                        }
+                    });
+                } else {
+                    // Limpiar campos si no hay ID seleccionado
+                    $("input, textarea, select").val('');
+                }
+            });
+        });
+    </script>
+    <style>
+        .menu-hidden {
+            display: none;
+        }
+    
+        .menu-container:hover .menu-hidden {
+            display: block;
+        }
+    
+        .menu-container {
+            position: relative;
+        }
+    
+        .menu-hidden {
+            position: absolute;
+            right: 0;
+            top: 100%; /* Para que el menú quede justo debajo del botón */
+            z-index: 50;
+            width: 12rem; /* Ajusta el ancho si es necesario */
+            background-color: white;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold">Modificar Importación</h1>
+                <div class="flex items-center space-x-4 relative">
+                    <a href="{% url 'servicios' %}" class="text-black flex items-center">
+                        <i class="fas fa-home mr-2"></i>Inicio
+                    </a>
+                    <div class="menu-container">
+                        <div class="text-black flex items-center cursor-pointer">
+                            <i class="fas fa-bars mr-2"></i>Menú
+                        </div>
+                        <div class="menu-hidden">
+                            <a href="{% url 'registro_importacion' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Registrar Importación</a>
+                            <a href="{% url 'consultar_importacion' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Consultar Importación</a>
+                            <a href="{% url 'listar_importaciones' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Listar Importaciones</a>
+                            <a href="{% url 'eliminar_importacion' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Eliminar Importación</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if error %}
+                <div class="mb-4 text-red-600">{{ error }}</div>
+            {% endif %}
+            <form method="POST" action="{% url 'modificar_importacion' %}">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="import_id" class="block text-sm font-medium text-gray-700">ID de Importación</label>
+                    <select id="import_id" name="import_id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                        <option value="">-- Selecciona una Importación --</option>
+                        {% for importacion in importaciones %}
+                            <option value="{{ importacion.idImportacion }}" {% if import_data and import_data.idImportacion == importacion.idImportacion %}selected{% endif %}>{{ importacion.idImportacion }} - {{importacion.proveedor}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="declaration_date" class="block text-sm font-medium text-gray-700">Fecha de Declaración</label>
+                        <input type="date" id="declaration_date" name="declaration_date" value="{{ import_data.fechaDeclaracion|default:'' }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="supplier" class="block text-sm font-medium text-gray-700">Proveedor</label>
+                        <input type="text" id="supplier" name="supplier" value="{{ import_data.proveedor|default:'' }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="tariff_code" class="block text-sm font-medium text-gray-700">Código Arancelario</label>
+                        <input type="text" id="tariff_code" name="tariff_code" value="{{ import_data.codigoArancelario|default:'' }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" maxlength="10" required>
+                    </div>
+                    <div>
+                        <label for="quantity" class="block text-sm font-medium text-gray-700">Cantidad</label>
+                        <input type="number" id="quantity" name="quantity" value="{{ import_data.cantidad|default:'' }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="unit" class="block text-sm font-medium text-gray-700">Unidad de Medida</label>
+                        <input type="text" id="unit" name="unit" value="{{ import_data.unidadMedida|default:'' }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="cif_value" class="block text-sm font-medium text-gray-700">Valor CIF</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
+                            <input type="text" name="cif_value" id="cif_value" value="{{ import_data.valorCif|default:'' }}" class="pl-8 mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" pattern="^\d+(\.\d{1,2})?$"  inputmode="decimal" oninput="this.value=this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="taxes" class="block text-sm font-medium text-gray-700">Impuestos</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">%</span>
+                            <input type="text" name="taxes" id="taxes" value="{{ import_data.impuestos|default:'' }}" class="pl-8 mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="Porcentaje de impuesto" maxlength="4" pattern="^\d+(\.\d{1,2})?$"  inputmode="decimal" oninput="this.value=this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="origin_country" class="block text-sm font-medium text-gray-700">Origen de Mercancía</label>
+                        <select id="origin_country" name="origin_country" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                            <option value="Argentina" {% if import_data and import_data.origenMercancia == "Argentina" %}selected{% endif %}>Argentina</option>
+                            <option value="Bolivia" {% if import_data and import_data.origenMercancia == "Bolivia" %}selected{% endif %}>Bolivia</option>
+                            <option value="Chile" {% if import_data and import_data.origenMercancia == "Chile" %}selected{% endif %}>Chile</option>
+                            <option value="Colombia" {% if import_data and import_data.origenMercancia == "Colombia" %}selected{% endif %}>Colombia</option>
+                            <option value="Ecuador" {% if import_data and import_data.origenMercancia == "Ecuador" %}selected{% endif %}>Ecuador</option>
+                            <option value="Mexico" {% if import_data and import_data.origenMercancia == "Mexico" %}selected{% endif %}>México</option>
+                            <option value="Peru" {% if import_data and import_data.origenMercancia == "Peru" %}selected{% endif %}>Perú</option>
+                            <option value="Venezuela" {% if import_data and import_data.origenMercancia == "Venezuela" %}selected{% endif %}>Venezuela</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="entry_port" class="block text-sm font-medium text-gray-700">Puerto de Entrada</label>
+                        <input type="text" id="entry_port" name="entry_port" value="{{ import_data.puertoEntrada|default:'' }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="transport_id" class="block text-sm font-medium text-gray-700">ID de Transporte</label>
+                        <select id="transport_id" name="transport_id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                            <option value="">-- Selecciona un Transporte --</option>
+                            {% for transporte in transportes %}
+                                <option value="{{ transporte.idTransporte }}" 
+                                        {% if import_data and import_data.transporteID and import_data.transporteID.idTransporte == transporte.idTransporte %}selected{% endif %}>
+                                    {{ transporte.idTransporte }} - {{ transporte.empresaTransporte }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="responsible_id" class="block text-sm font-medium text-gray-700">ID de Responsable</label>
+                        <select id="responsible_id" name="responsible_id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                            <option value="">-- Selecciona un Responsable --</option>
+                            {% for responsable in responsables %}
+                                <option value="{{ responsable.id }}"
+                                        {% if import_data and import_data.responsableID and import_data.responsableID.id == responsable.id %}selected{% endif %}>
+                                    {{ responsable.id }} - {{ responsable.nombreCompleto }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-span-2">
+                        <label for="description" class="block text-sm font-medium text-gray-700">Descripción de Mercancía</label>
+                        <textarea id="description" name="description" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" rows="4" placeholder="Descripción">{{ import_data.descripcionMercancia|default:'' }}</textarea>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <button type="submit" class="w-full bg-black text-white py-2 rounded-md">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

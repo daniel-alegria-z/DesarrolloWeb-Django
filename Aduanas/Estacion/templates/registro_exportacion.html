@@ -1,0 +1,145 @@
+<html>
+<head>
+    <title>AduanaCo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+
+<style>
+    .menu-hidden {
+        display: none;
+    }
+
+    .menu-container:hover .menu-hidden {
+        display: block;
+    }
+
+    .menu-container {
+        position: relative;
+    }
+
+    .menu-hidden {
+        position: absolute;
+        right: 0;
+        top: 100%; /* Para que el menú quede justo debajo del botón */
+        z-index: 50;
+        width: 12rem; /* Ajusta el ancho si es necesario */
+        background-color: white;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 0.5rem;
+    }
+</style>
+
+<body class="bg-gray-100">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold">AduanaCo</h1>
+                <div class="flex items-center space-x-4 relative">
+                    <a href="{% url 'servicios' %}" class="text-black flex items-center">
+                        <i class="fas fa-home mr-2"></i>Inicio
+                    </a>
+                    <div class="menu-container">
+                        <div class="text-black flex items-center cursor-pointer">
+                            <i class="fas fa-bars mr-2"></i>Menú
+                        </div>
+                        <div class="menu-hidden">
+                            <a href="{% url 'modificar_exportacion' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Modificar Exportación</a>
+                            <a href="{% url 'consultar_exportacion' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Consultar Exportación</a>
+                            <a href="{% url 'listar_exportaciones' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Listar Exportaciones</a>
+                            <a href="{% url 'eliminar_exportacion' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Eliminar Exportación</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h2 class="text-xl font-semibold mb-2">Información de Exportación</h2>
+            <p class="text-gray-500 mb-6">Formulario</p>
+            <form id="controlForm" method="POST" action="{% url 'registro_exportacion' %}">
+                {% csrf_token %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="export_id" class="block text-sm font-medium text-gray-700">ID de exportación</label>
+                        <input type="text" name="export_id" id="export_id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" pattern="[0-9]*" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g, '')" required>
+                    </div>
+                    <div>
+                        <label for="declaration_date" class="block text-sm font-medium text-gray-700">Fecha de declaración</label>
+                        <input type="date" name="declaration_date" id="declaration_date" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="client" class="block text-sm font-medium text-gray-700">Cliente</label>
+                        <input type="text" name="client" id="client" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="Nombre de cliente" required>
+                    </div>
+                    <div>
+                        <label for="tariff_code" class="block text-sm font-medium text-gray-700">Código arancelario</label>
+                        <input type="text" name="tariff_code" id="tariff_code" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="Código" maxlength="10" pattern="\d{1,10}" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g, '').slice(0, 10)" required>
+                    </div>
+                    <div>
+                        <label for="quantity" class="block text-sm font-medium text-gray-700">Cantidad</label>
+                        <input type="number" name="quantity" id="quantity" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="Cantidad" required>
+                    </div>
+                    <div>
+                        <label for="unit" class="block text-sm font-medium text-gray-700">Unidad de medida</label>
+                        <input type="text" name="unit" id="unit" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="Unidad de medida" required>
+                    </div>
+                    <div>
+                        <label for="fob_value" class="block text-sm font-medium text-gray-700">Valor FOB</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
+                            <input type="text" name="fob_value" id="fob_value" class="pl-8 mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" pattern="[0-9]*" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g, '')" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="taxes" class="block text-sm font-medium text-gray-700">Impuestos</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">%</span>
+                        <input type="text" name="taxes" id="taxes" class="pl-8 mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="Porcentaje de impuesto" maxlength="2" pattern="[0-9]*" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g, '')" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="destiny_country" class="block text-sm font-medium text-gray-700">Destino de mercancia</label>
+                        <select id="destiny_country" name="destiny_country" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                            <option value="Argentina">Argentina</option>
+                            <option value="Bolivia">Bolivia</option>
+                            <option value="Chile">Chile</option>
+                            <option value="Colombia">Colombia</option>
+                            <option value="Ecuador">Ecuador</option>
+                            <option value="Mexico">México</option>
+                            <option value="Peru">Perú</option>
+                            <option value="Venezuela">Venezuela</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="exit_port" class="block text-sm font-medium text-gray-700">Puerto de salida</label>
+                        <input type="text" name="exit_port" id="exit_port" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="Nombre del puerto" required>
+                    </div>
+                    <div>
+                        <label for="transport_id" class="block text-sm font-medium text-gray-700">ID de transporte</label>
+                        <select id="transport_id" name="transport_id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                            <option value="">-- Selecciona un Transporte --</option>
+                            {% for transporte in transportes %}
+                                <option value="{{ transporte.idTransporte }}">{{ transporte.idTransporte }} - {{ transporte.empresaTransporte }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="responsible_id" class="block text-sm font-medium text-gray-700">ID de responsable</label>
+                        <select id="responsible_id" name="responsible_id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"  required>
+                            <option value="">-- Selecciona un Responsable --</option>
+                            {% for responsable in responsables %}
+                                <option value="{{ responsable.id }}">{{ responsable.id }} - {{ responsable.nombreCompleto }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-span-2">
+                        <label for="description" class="block text-sm font-medium text-gray-700">Descripción de mercancía</label>
+                        <textarea id="description" name="description" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" rows="4" placeholder="Descripción de mercancía"></textarea>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <button id="registerImpo" type="submit" class="w-full bg-black text-white py-2 rounded-md">Registrar Exportación</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

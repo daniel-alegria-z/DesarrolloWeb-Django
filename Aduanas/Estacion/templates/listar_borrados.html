@@ -1,0 +1,323 @@
+<html>
+<head>
+    <title>Listar Registros Borrados</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script>
+        function mostrarTabla(tablaId) {
+            const tabla = document.getElementById(tablaId);
+            const isVisible = tabla.style.display === 'block';
+            // Ocultar todas las tablas primero
+            const tablas = document.querySelectorAll('.tabla');
+            tablas.forEach(tabla => tabla.style.display = 'none');
+            // Mostrar u ocultar la tabla seleccionada
+            if (!isVisible) {
+                tabla.style.display = 'block';
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex flex-col items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-6xl">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold">Listado de Datos Borrados</h1>
+                <a href="{% url 'servicios' %}" class="text-black flex items-center">
+                    <i class="fas fa-home mr-2"></i>Inicio
+                </a>
+            </div><br>
+            <div class="grid grid-cols-3 gap-4 mb-6">
+                <!-- Primera fila de botones -->
+                <button onclick="mostrarTabla('tablaUsuarioBorrado')" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-800">
+                    Usuarios Borrados
+                </button>
+                <button onclick="mostrarTabla('tablaImportacionBorrado')" class="bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-800">
+                    Importaciones Borradas
+                </button>
+                <button onclick="mostrarTabla('tablaExportacionBorrado')" class="bg-amber-600 text-white py-2 px-4 rounded hover:bg-amber-800">
+                    Exportaciones Borradas
+                </button>
+                <!-- Segunda fila de botones -->
+                <button onclick="mostrarTabla('tablaTransporteBorrado')" class="bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-800">
+                    Transportes Borrados
+                </button>
+                <button onclick="mostrarTabla('tablaControlBorrado')" class="bg-pink-600 text-white py-2 px-4 rounded hover:bg-pink-800">
+                    Controles Borrados
+                </button>
+                <button onclick="mostrarTabla('tablaCargaBorrado')" class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-800">
+                    Cargas Borradas
+                </button>
+            </div>
+            <div class="overflow-x-auto">
+                <!-- Tabla Transporte Borrado -->
+                <div id="tablaUsuarioBorrado" class="tabla" style="display: none;">
+                    <h2 class="text-xl font-bold mb-4">Lista de Usuarios Borrados</h2>
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre Completo</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rol</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Año de Nacimiento</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">País de origen</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Correo</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Género</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha de Eliminación</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for usuario in usuarios_borrados %}
+                                <tr>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ usuario.id }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ usuario.nombreCompleto }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ usuario.rol }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ usuario.ano_nacimiento }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ usuario.pais }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">+ {{ usuario.telefono }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ usuario.correo }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ usuario.genero }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ usuario.fecha_eliminacion }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="11" class="px-6 py-4 text-sm text-gray-600 text-center">No hay usuarios borrados.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div id="tablaImportacionBorrado" class="tabla" style="display: none;">
+                    <h2 class="text-xl font-bold mb-4">Lista de Importaciones Borradas</h2>
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha Declaración</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Proveedor</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código Arancelario</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cantidad</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unidad Medida</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor CIF</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Impuestos</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Origen</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Puerto Entrada</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Transporte</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Responsable</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha de Eliminación</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for importacion in importaciones_borradas %}
+                                <tr>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ importacion.idImportacion }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ importacion.fechaDeclaracion }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ importacion.proveedor }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">#{{ importacion.codigoArancelario }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ importacion.cantidad }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ importacion.unidadMedida }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">${{ importacion.valorCif }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ importacion.impuestos }} %</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ importacion.origenMercancia }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ importacion.puertoEntrada }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ importacion.transporteID.idTransporte }} - {{ importacion.transporteID.empresaTransporte }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ importacion.responsableID.id }} - {{ importacion.responsableID.nombreCompleto }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ importacion.descripcionMercancia }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ importacion.fecha_eliminacion }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="13" class="px-6 py-4 text-sm text-gray-600 text-center">No hay importaciones borradas.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div id="tablaExportacionBorrado" class="tabla" style="display: none;">
+                    <h2 class="text-xl font-bold mb-4">Lista de Exportaciones Borradas</h2>
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha Declaración</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código Arancelario</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cantidad</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unidad Medida</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor FOB</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Impuestos</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Destino</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Puerto Salida</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Transporte</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Responsable</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha de Eliminación</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for exportacion in exportaciones_borradas %}
+                                <tr>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ exportacion.idExportacion }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ exportacion.fechaDeclaracion }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ exportacion.cliente }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">#{{ exportacion.codigoArancelario }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ exportacion.cantidad }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ exportacion.unidadMedida }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">${{ exportacion.valorFob }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ exportacion.impuestos }} %</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ exportacion.destinoMercancia }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ exportacion.puertoSalida }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ exportacion.transporteID.idTransporte }} - {{ exportacion.transporteID.empresaTransporte }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ exportacion.responsableID.id }} - {{ exportacion.responsableID.nombreCompleto }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ exportacion.descripcionMercancia }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ exportacion.fecha_eliminacion }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="13" class="px-6 py-4 text-sm text-gray-600 text-center">No hay exportaciones borradas.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Tabla Transporte Borrado -->
+                <div id="tablaTransporteBorrado" class="tabla" style="display: none;">
+                    <h2 class="text-xl font-bold mb-4">Lista de Transportes Borrados</h2>
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Empresa</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Medio</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Número Matrícula</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Conductor</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ruta</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha Salida</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha Llegada</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Responsable</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha de Eliminación</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for transporte in transportes_borrados %}
+                                <tr>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ transporte.idTransporte }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ transporte.empresaTransporte }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ transporte.medioTransporte }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ transporte.numeroMatricula }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ transporte.conductor }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ transporte.ruta }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ transporte.fechaSalida }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ transporte.fechaLlegada }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ transporte.estadoTransporte }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ transporte.responsableID.nombreCompleto }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ transporte.fecha_eliminacion }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="11" class="px-6 py-4 text-sm text-gray-600 text-center">No hay transportes borrados.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Tabla Control Borrado -->
+                <div id="tablaControlBorrado" class="tabla" style="display: none;">
+                    <h2 class="text-xl font-bold mb-4">Lista de Controles Borrados</h2>
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha Inspección</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hora Inspección</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo Control</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Resultado</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Importación</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Exportación</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Responsable</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción Hallazgos</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha de Eliminación</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for control in controles_borrados %}
+                                <tr>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ control.idControl }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ control.fechaInspeccion }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ control.horaInspeccion }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ control.tipoControl }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ control.resultadoInspeccion }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ control.idImportacion.idImportacion }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ control.idExportacion.idExportacion }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ control.responsableID.id }} - {{ control.responsableID.nombreCompleto }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ control.descripcionHallazgos }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ control.fecha_eliminacion }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="10" class="px-6 py-4 text-sm text-gray-600 text-center">No hay controles borrados.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>                    
+                </div>
+
+                <!-- Tabla Carga Borrada -->
+                <div id="tablaCargaBorrado" class="tabla" style="display: none;">
+                    <h2 class="text-xl font-bold mb-4">Lista de Cargas Borradas</h2>
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo de Carga</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Peso Bruto</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Peso Neto</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Volumen</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Embalaje</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contenido</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor Declarado</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Seguro de Carga</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Importación</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Exportación</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Responsable</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+                                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha de Eliminación</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for carga in cargas_borradas %}
+                                <tr>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ carga.idCarga }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ carga.tipoCarga }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ carga.pesoBruto }} kg</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ carga.pesoNeto }} kg</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ carga.volumen }} m³</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ carga.embalaje }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ carga.contenido }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">${{ carga.valorDeclarado }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">${{ carga.seguroCarga }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ carga.estadoCarga }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ carga.idImportacion.idImportacion }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ carga.idExportacion.idExportacion }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ carga.responsableID.id }} - {{ carga.responsableID.nombreCompleto }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ carga.descripcionCarga }}</td>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600">{{ carga.fecha_eliminacion }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="14" class="px-6 py-4 text-sm text-gray-600 text-center">No hay cargas borradas.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

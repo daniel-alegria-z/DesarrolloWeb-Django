@@ -1,0 +1,112 @@
+<html>
+<head>
+    <title>Lista de Usuarios</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="css/diseño.css">
+</head>
+
+<style>
+    .menu-hidden {
+        display: none;
+    }
+
+    .menu-container:hover .menu-hidden {
+        display: block;
+    }
+
+    .menu-container {
+        position: relative;
+    }
+
+    .menu-hidden {
+        position: absolute;
+        right: 0;
+        top: 100%; /* Para que el menú quede justo debajo del botón */
+        z-index: 50;
+        width: 12rem; /* Ajusta el ancho si es necesario */
+        background-color: white;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 0.5rem;
+    }
+</style>
+
+<body class="bg-gray-100 py-10">
+    <div class="container mx-auto max-w-4xl">
+        <h2 class="text-3xl font-bold text-center mb-6">Listar Usuarios</h2>
+    
+        <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+            <h4 class="text-xl font-semibold mb-4">AduanaCo</h4>
+    
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold">Filtro de Usuarios</h1>
+                <div class="flex items-center space-x-4 relative">
+                    <a href="{% url 'servicios_supervisor' %}" class="text-black flex items-center">
+                        <i class="fas fa-home mr-2"></i>Inicio
+                    </a>
+                    <div class="menu-container">
+                        <div class="text-black flex items-center cursor-pointer">
+                            <i class="fas fa-bars mr-2"></i>Menú
+                        </div>
+                        <div class="menu-hidden">
+                            <a href="{% url 'consultar_usuarioS' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Consultar Usuarios</a>   
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <form method="get" action="{% url 'listar_usuariosS' %}" class="flex flex-wrap gap-4">
+                <div class="flex flex-col w-full md:w-1/2">
+                    <label for="rol" class="mb-2 text-gray-700 font-medium">Rol:</label>
+                    <!-- ComboBox para seleccionar entre "Administrador" y "Supervisor" -->
+                    <select id="rol" name="rol" class="p-2 border rounded-md shadow-sm" value="{{ rol_filtro }}">
+                        <option value="">Seleccione un rol</option>
+                        <option value="Administrador" {% if rol_filtro == 'Administrador' %}selected{% endif %}>Administrador</option>
+                        <option value="Supervisor" {% if rol_filtro == 'Supervisor' %}selected{% endif %}>Supervisor</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full md:3 px-6 py-1 h-auto bg-blue-500 text-white rounded-md shadow hover:bg-blue-600">
+                    Filtrar
+                </button>
+            </form>
+        </div>
+    
+        <!-- Resultados de los usuarios -->
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <h4 class="text-xl font-semibold mb-4">Resultados de la Búsqueda</h4>
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Nombre Completo</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Rol</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">País</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Género</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Teléfono</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Correo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if usuarios %}
+                            {% for usuario in usuarios %}
+                                <tr class="border-b">
+                                    <td class="px-6 py-4 text-sm text-gray-700">{{ usuario.nombreCompleto }}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-700">{{ usuario.rol }}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-700">{{ usuario.pais }}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-700">{{ usuario.genero }}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-700">+ {{ usuario.telefono }}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-700">{{ usuario.correo }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-600">No se encontraron usuarios con esos filtros.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
