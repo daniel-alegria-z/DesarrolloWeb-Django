@@ -1,6 +1,7 @@
 # Sistema de Gestión Aduanera
 
 Este es un sistema desarrollado en *Django* para la gestión de procesos aduaneros. Incluye funcionalidades de CRUD (Crear, Leer, Actualizar, Eliminar) distribuidas en seis apartados principales. Cada segmento está diseñado para ser amigable con el usuario, implementando una interfaz intuitiva y un flujo eficiente.
+
 *Visualización del proyecto:* https://aduanaco.site
 
 ## Características principales
